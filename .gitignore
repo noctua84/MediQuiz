@@ -49,6 +49,7 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+test/quiz.sqlite3
 
 # Translations
 *.mo
