@@ -1,5 +1,205 @@
+#:kivy 2.1.0
+
+#Manager:
+	#MainWindow:
+
+
 <MainWindow>
+	manager: manager
+
+	canvas.before:
+		Color:
+			rgb: 0, 0, 0
+		Rectangle:
+			size: self.size
+			pos: self.pos
+
+	BoxLayout:
+		orientation: "vertical"
+
+		BoxLayout:
+			size_hint_y: 0.1
+
+			Button:
+				text: "Zum Quiz!"
+				on_release: root.btn_prepare_quiz()
+			Button:
+				text: "Fragenkatalog"
+				on_release: root.btn_questions()
+
+		Manager:
+			id: manager
+			StartScreen
+			QuizWindow
+			PrepareQuizWindow
+			QuestionsWindow
+			QuestionListWindow
+
+		ActionBar
+
+<StartScreen>
+	name: "start"
+	Label:
+		text: "MediQuiz - die Lernapp für die MTA-Ausbildung"
 
 <QuizWindow>
+	name: "quiz"
+	question: question
+	answer: answer
 
-<AddQuestionWindow>
+	BoxLayout:
+		orientation: "vertical"
+
+		# quiz layout:
+		FloatLayout:
+			Label:
+				text: "Frage:"
+				size_hint: None, None
+				pos_hint: {"x": 0.1, "y": 0.5}
+				width: 100
+				height: 50
+				font_size: 26
+			TextInput:
+				id: question
+				multiline: True
+				size_hint: None, None
+				pos_hint: {"x": 0.3, "y": 0.5}
+				width: 400
+				height: 50
+
+			Label:
+				text: "Antwort:"
+				size_hint: None, None
+				pos_hint: {"x": 0.1, "y": 0.2}
+				width: 100
+				height: 50
+				font_size: 26
+			TextInput:
+				id: answer
+				multiline: True
+				size_hint: None, None
+				pos_hint: {"x": 0.3, "y": 0.05}
+				width: 400
+				height: 100
+
+		# control buttons
+		BoxLayout:
+			Button:
+				text: "Let's Quiz!"
+				size_hint: 0.4, 0.4
+				on_release: root.btn_quiz()
+			Button:
+				text: "Überprüfen"
+				size_hint: 0.4, 0.4
+				on_release: root.btn_next_question()
+
+
+<PrepareQuizWindow>
+	name: "prepare_quiz"
+
+	BoxLayout:
+		orientation: "vertical"
+
+		Label:
+			title: "Quiz vorbereiten"
+
+		FloatLayout
+			Button:
+				text: "Quiz starten"
+				size_hint: 0.35, 0.25
+				pos_hint: {"x": 0.34, "bottom": 1}
+				on_release: root.btn_start_quiz()
+
+<QuestionsWindow>
+	name: "questions"
+	question: question
+	answer: answer
+
+	BoxLayout:
+		orientation: "vertical"
+
+		GridLayout:
+			cols: 2
+			padding: 20
+			Label:
+				text: "Frage: "
+				font_size: 26
+			TextInput:
+				id: question
+				multiline: True
+				size_hint: None, None
+				pos_hint: {"x": 0.3, "y": 0.5}
+				width: 600
+				height: 100
+			Label:
+				text: "Antwort"
+				font_size: 26
+			TextInput:
+				id: answer
+				multiline: True
+				size_hint: None, None
+				pos_hint: {"x": 0.3, "y": 0.05}
+				width: 600
+				height: 100
+
+		BoxLayout:
+			orientation: "horizontal"
+
+			Button:
+				text: "Frage speichern"
+				size_hint: 0.3, 0.3
+				on_release: root.btn_save_question()
+
+			Button:
+				text: "Fragen anzeigen"
+				size_hint: 0.3, 0.3
+				on_release: root.btn_show_question_list()
+
+<SelectableQuestionListItem>
+	canvas.before:
+		Color:
+			rgba: (0, 0.9, 0.1, 0.3) if self.selected else (0, 0, 0, 1)
+		Rectangle:
+			pos: self.pos
+			size: self.size
+
+	question: question_text
+	answer: answer_text
+	pos: self.pos
+	size: self.size
+	TextInput:
+		id: question_text
+		multiline: True
+		readonly: True
+	TextInput:
+		id: answer_text
+		multiline: True
+		readonly: True
+	Button:
+		text: "X"
+		size_hint: (0.1, 0.1)
+		on_release:
+			root.btn_delete_question()
+
+
+<QuestionListWindow>
+	name: "question_list"
+
+	BoxLayout:
+		orientation: "vertical"
+		Button:
+			text: "Fragen anzeigen"
+			size_hint_y: 0.1
+			on_release:
+				root.btn_display_question_list()
+
+		RecycleView:
+			viewclass: 'SelectableQuestionListItem'
+			data: [{'raw': question} for question in root.questions]
+			SelectableRecycleBoxLayout:
+				default_size: 1, dp(80)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+				orientation: "vertical"
+				multiselect: True

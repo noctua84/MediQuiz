@@ -3,9 +3,20 @@ from sqlalchemy import text
 
 
 def test_db():
-    test_db = Db()
+    db_test = Db()
     
-    with test_db.engine.connect() as conn:
+    with db_test.engine.connect() as conn:
         result = conn.execute(text("select 'hello world'"))
         assert result.all()
-    
+
+
+def test_get_questions():
+    assert False
+
+
+def test_save_question():
+    assert False
+
+
+def test_save_stats():
+    assert False

@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 kivy = {extras = ["base"], version = "*"}
 sqlalchemy = "*"
+kwargs = "*"
+pyinstaller = "*"
 
 [dev-packages]
 pytest = "*"
